@@ -18,6 +18,7 @@ from datetime import datetime, date, timedelta
 from glob import glob  
 from random import randint,  choice
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import ReplyKeyboardMarkup
 from datetime import date
 import ephem
 import settings
@@ -39,7 +40,10 @@ def greet_user(update, context):
     text = 'Вызван /start'
     context.user_data['emoji'] = text_emojize(context.user_data)
     print(text)
-    update.message.reply_text(f'Иди своей дорогой, Сталкер...{context.user_data["emoji"]}')
+    update.message.reply_text(
+        f'Иди своей дорогой, Сталкер...{context.user_data["emoji"]}',
+        reply_markup = my_keyboard()
+        )
 
 def word_count(update, text):
     count_text = update.message.text
@@ -60,13 +64,17 @@ def word_count(update, text):
             pass
             
     if len(words) - 1 == 0:
-        update.message.reply_text('В сообщении нет слов')
+        update.message.reply_text(f'В сообщении нет слов',
+        reply_markup = my_keyboard())
     elif result1 > 0:
-        update.message.reply_text('Вы используете знак "_". Не делайте так')
+        update.message.reply_text(f'Вы используете знак "_". Не делайте так',
+        reply_markup = my_keyboard())
     elif result2 > 0:
-        update.message.reply_text('Вы сделали пробел перед знаком препинания, либо в сообщении нет слов. Не делайте так')
+        update.message.reply_text(f'Вы сделали пробел перед знаком препинания, либо в сообщении нет слов. Не делайте так',
+        reply_markup = my_keyboard())
     else:
-        update.message.reply_text(len(words)-1)
+        update.message.reply_text(len(words)-1,
+        reply_markup = my_keyboard())
 
 def talk_to_me(update, context):
     text = update.message.text
@@ -182,13 +190,16 @@ def guess_number(update, context):
     
     update.message.reply_text(message)
 
-def send_city_pict(update, context):
-    city_photos_list = glob('images/city*.jp*g')
-    city_pic_filename = choice(city_photos_list)
+def send_stalker_pict(update, context):
+    stalker_photos_list = glob('images/stalker*.jp*g')
+    stalker_pic_filename = choice(stalker_photos_list)
     chat_id = update.effective_chat.id
-    context.bot.send_photo(chat_id, photo=open(city_pic_filename, 'rb'))
+    context.bot.send_photo(chat_id, photo=open(stalker_pic_filename, 'rb'))
+    update.message.reply_text('Я здесь!')
         
-
+def my_keyboard():
+    return ReplyKeyboardMarkup([['Кто здесь', 'Узнать где находится планета']])
+    
    
   
 
@@ -201,10 +212,12 @@ def main():
     dp.add_handler(CommandHandler("guess", guess_number))
     dp.add_handler(CommandHandler("planet", eph))
     dp.add_handler(CommandHandler("wordcount", word_count))
-    dp.add_handler(CommandHandler("city", send_city_pict))
+    dp.add_handler(CommandHandler("stalker", send_stalker_pict))
     dp.add_handler(CommandHandler("next_full_moon", full_moon))
+    dp.add_handler(MessageHandler(Filters.regex('^(Кто здесь)$'), send_stalker_pict))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
+    logging.info("Бот стартовал")
     mybot.start_polling()
     mybot.idle()
 
