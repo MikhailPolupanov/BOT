@@ -99,7 +99,7 @@ def full_moon(update, context):
     datetext =  user_text.split()
     date = datetext[1].replace('.', '/')
     moon_date = ephem.next_full_moon(date)
-    update.message.reply_text(f'Следующее полнолуние: {moon_date}')
+    update.message.reply_text(f'Следующее полнолуние: {moon_date}. \nУбедитесь, что вы вводили дату в формате "гггг.мм.дд", иначе бот вам пришлет хрень')
 
 def eph(update, context):
     date_today = date.today()
