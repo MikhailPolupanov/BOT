@@ -1,8 +1,9 @@
 from glob import glob 
+import os
 from random import choice
 import ephem
 from datetime import datetime, date, timedelta
-from utils import text_emojize, play_number, my_keyboard
+from utils import text_emojize, play_number, my_keyboard, check_object
 
 def greet_user(update, context): 
     text = 'Вызван /start'
@@ -163,3 +164,38 @@ def eph(update, context):
         update.message.reply_text(place_con)          
     else:
         update.message.reply_text('Такой планеты в солнечной системе нет')
+
+def check_user_photo(update, context):
+    update.message.reply_text('Обрабатываем фото',
+        reply_markup = my_keyboard())
+    os.makedirs('downloads', exist_ok=True)
+    photo_file = context.bot.getFile(update.message.photo[-1].file_id)
+    file_name = os.path.join('downloads', f'{update.message.photo[-1].file_id}.jpg')
+    photo_file.download(file_name)
+    update.message.reply_text('Файл сохранен')
+    if check_object(file_name, 'animal'):
+        update.message.reply_text('Обнаружено животное, сораняю в библиотеку')
+        new_file_name = os.path.join('images', f'cat_{photo_file.file_id}.jpg')
+        os.rename(file_name, new_file_name)
+    elif check_object(file_name, 'building'):
+        update.message.reply_text('Обнаружено здание, сохраняю в библиотеку')
+        new_file_name = os.path.join('images', f'building_{photo_file.file_id}.jpg')
+        os.rename(file_name, new_file_name)
+    elif check_object(file_name, 'weapon'):
+        update.message.reply_text('Обнаружено оружие, сораняю в библиотеку')
+        new_file_name = os.path.join('images', f'building_{photo_file.file_id}.jpg')
+        os.rename(file_name, new_file_name)
+    elif check_object(file_name, 'car'):
+        update.message.reply_text('Обнаружен автомобиль, сораняю в библиотеку')
+        new_file_name = os.path.join('images', f'building_{photo_file.file_id}.jpg')
+        os.rename(file_name, new_file_name)
+    elif check_object(file_name, 'knife'):
+        update.message.reply_text('Обнаружено оружие, сораняю в библиотеку')
+        new_file_name = os.path.join('images', f'building_{photo_file.file_id}.jpg')
+        os.rename(file_name, new_file_name)
+    else:
+        os.remove(file_name)
+        update.message.reply_text('Я умею распознавать только здания, оружие, машины или животных. Здесь этого нет, удаляю файл')
+
+def photo_request(update, context):
+    update.message.reply_text('Пришлите мне картинку. Я её проверю и, если на ней есть животное, оружие, машина или здание, я вам сообщу об этом и сохраню себе в базу')

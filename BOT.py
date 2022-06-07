@@ -16,7 +16,7 @@ import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import settings
 from handlers import (greet_user, talk_to_me, guess_number, send_stalker_pict, 
-                        user_coordinates, word_count, full_moon, eph)
+                        user_coordinates, word_count, full_moon, eph, check_user_photo, photo_request)
 
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
@@ -33,6 +33,8 @@ def main():
     dp.add_handler(CommandHandler("wordcount", word_count))
     dp.add_handler(CommandHandler("stalker", send_stalker_pict))
     dp.add_handler(CommandHandler("next_full_moon", full_moon))
+    dp.add_handler(MessageHandler(Filters.regex('^(Отправить картинку)$'), photo_request))
+    dp.add_handler(MessageHandler(Filters.photo, check_user_photo))
     dp.add_handler(MessageHandler(Filters.regex('^(Кто здесь)$'), send_stalker_pict))
     dp.add_handler(MessageHandler(Filters.location, user_coordinates))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
