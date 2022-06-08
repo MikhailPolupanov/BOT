@@ -32,7 +32,8 @@ def talk_to_me(update, context):
     elif text.lower() == "что ты умеешь?" or text.lower() == "что ты умеешь" or text.lower() == "что ты можешь" or text.lower() == "что ты можешь?":
         update.message.reply_text("Мочить мутантов")
     else:
-        update.message.reply_text(f'{text} {context.user_data["emoji"]}')
+        update.message.reply_text(f'{text} {context.user_data["emoji"]}',
+        reply_markup = my_keyboard())
 
 
 def guess_number(update, context):
@@ -174,7 +175,7 @@ def check_user_photo(update, context):
     photo_file.download(file_name)
     update.message.reply_text('Файл сохранен')
     if check_object(file_name, 'animal'):
-        update.message.reply_text('Обнаружено животное, сораняю в библиотеку')
+        update.message.reply_text('Обнаружено животное, сохраняю в библиотеку')
         new_file_name = os.path.join('images', f'cat_{photo_file.file_id}.jpg')
         os.rename(file_name, new_file_name)
     elif check_object(file_name, 'building'):
@@ -182,16 +183,16 @@ def check_user_photo(update, context):
         new_file_name = os.path.join('images', f'building_{photo_file.file_id}.jpg')
         os.rename(file_name, new_file_name)
     elif check_object(file_name, 'weapon'):
-        update.message.reply_text('Обнаружено оружие, сораняю в библиотеку')
-        new_file_name = os.path.join('images', f'building_{photo_file.file_id}.jpg')
+        update.message.reply_text('Обнаружено оружие, сохраняю в библиотеку')
+        new_file_name = os.path.join('images', f'weapon_{photo_file.file_id}.jpg')
         os.rename(file_name, new_file_name)
     elif check_object(file_name, 'car'):
-        update.message.reply_text('Обнаружен автомобиль, сораняю в библиотеку')
-        new_file_name = os.path.join('images', f'building_{photo_file.file_id}.jpg')
+        update.message.reply_text('Обнаружен автомобиль, сохраняю в библиотеку')
+        new_file_name = os.path.join('images', f'car_{photo_file.file_id}.jpg')
         os.rename(file_name, new_file_name)
     elif check_object(file_name, 'knife'):
-        update.message.reply_text('Обнаружено оружие, сораняю в библиотеку')
-        new_file_name = os.path.join('images', f'building_{photo_file.file_id}.jpg')
+        update.message.reply_text('Обнаружено оружие, сохраняю в библиотеку')
+        new_file_name = os.path.join('images', f'knife_{photo_file.file_id}.jpg')
         os.rename(file_name, new_file_name)
     else:
         os.remove(file_name)

@@ -24,7 +24,7 @@ def play_number(user_number):
     return message
 
 def my_keyboard():
-    return ReplyKeyboardMarkup([['Кто здесь', KeyboardButton('Мои координаты', request_location = True), 'Отправить картинку']])
+    return ReplyKeyboardMarkup([['Кто здесь', KeyboardButton('Мои координаты', request_location = True), 'Отправить картинку', 'Заполнить анкету']])
 
 def check_object(file_name, object_name):
     channel = ClarifaiChannel.get_grpc_channel()
