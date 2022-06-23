@@ -16,10 +16,11 @@ def play_number(user_number):
     else:
         message = f'Ваше число: {user_number}, моё число: {bot_number}, я выиграл'
     return message
-    
+
 
 def my_keyboard():
     return ReplyKeyboardMarkup([['Кто здесь', KeyboardButton('Мои координаты', request_location = True), 'Отправить картинку', 'Заполнить анкету']])
+
 
 def check_object(file_name, object_name):
     channel = ClarifaiChannel.get_grpc_channel()

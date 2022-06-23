@@ -1,5 +1,5 @@
 from datetime import datetime
-from pymongo import MongoClient 
+from pymongo import MongoClient
 from random import choice
 from emoji import emojize
 import settings
@@ -26,8 +26,8 @@ def get_or_create_user(db, effective_user, chat_id):
 
 def save_anketa(db, user_id, anketa_data):
     user = db.users.find_one({'user_id': user_id})
-    anketa_data['created'] = datetime.now() #как все введенные данные анкеты попадают в переменную anketa_data?
-    if not 'anketa' in user:
+    anketa_data['created'] = datetime.now()
+    if 'anketa' not in user:
         db.users.update_one(
             {'_id': user['_id']},
             {'$set': {'anketa': [anketa_data]}}
