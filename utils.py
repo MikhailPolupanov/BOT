@@ -1,17 +1,11 @@
 from sre_constants import SUCCESS
 import settings
-from emoji import emojize
-from random import randint, choice
+from random import randint
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import resources_pb2, service_pb2, service_pb2_grpc
 from clarifai_grpc.grpc.api.status import status_pb2, status_code_pb2
 
-def text_emojize(user_data):
-    if 'emoji' not in user_data:
-        smile = choice(settings.USER_EMOJI)
-        return emojize(smile, use_aliases=True)
-    return user_data['emoji']
 
 def play_number(user_number):
     bot_number = randint(user_number - 10, user_number + 10)
@@ -22,6 +16,7 @@ def play_number(user_number):
     else:
         message = f'Ваше число: {user_number}, моё число: {bot_number}, я выиграл'
     return message
+    
 
 def my_keyboard():
     return ReplyKeyboardMarkup([['Кто здесь', KeyboardButton('Мои координаты', request_location = True), 'Отправить картинку', 'Заполнить анкету']])

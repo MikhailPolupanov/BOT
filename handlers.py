@@ -1,22 +1,24 @@
 from glob import glob 
 import os
 from random import choice
+from db import db, get_or_create_user
 import ephem
 from datetime import datetime, date, timedelta
-from utils import text_emojize, play_number, my_keyboard, check_object
+from utils import play_number, my_keyboard, check_object
 
 def greet_user(update, context): 
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     text = 'Вызван /start'
-    context.user_data['emoji'] = text_emojize(context.user_data)
+
     print(text)
     update.message.reply_text(
-        f'Иди своей дорогой, Сталкер...{context.user_data["emoji"]}',
+        f'Иди своей дорогой, Сталкер...{user["emoji"]}',
         reply_markup = my_keyboard()
         )
 
 def talk_to_me(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     text = update.message.text
-    context.user_data['emoji'] = text_emojize(context.user_data)
     print(text)
     
     if text.lower() == "хабар" or text.lower() == "Хабар!" or text.lower() == "Хабар?":
@@ -32,11 +34,12 @@ def talk_to_me(update, context):
     elif text.lower() == "что ты умеешь?" or text.lower() == "что ты умеешь" or text.lower() == "что ты можешь" or text.lower() == "что ты можешь?":
         update.message.reply_text("Мочить мутантов")
     else:
-        update.message.reply_text(f'{text} {context.user_data["emoji"]}',
+        update.message.reply_text(f'{text} {user["emoji"]}',
         reply_markup = my_keyboard())
 
 
 def guess_number(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     print(context.args)
     if context.args: 
         try:
@@ -50,6 +53,7 @@ def guess_number(update, context):
     update.message.reply_text(message)
 
 def send_stalker_pict(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     stalker_photos_list = glob('images/stalker*.jp*g')
     stalker_pic_filename = choice(stalker_photos_list)
     chat_id = update.effective_chat.id
@@ -57,14 +61,15 @@ def send_stalker_pict(update, context):
     update.message.reply_text('Я здесь!')
 
 def user_coordinates(update, context):
-    context.user_data['emoji'] = text_emojize(context.user_data)
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     coords = update.message.location
     update.message.reply_text(
-        f'Ваши координаты {coords} {context.user_data["emoji"]}!', 
+        f'Ваши координаты {coords} {user["emoji"]}!', 
         reply_markup = my_keyboard()
         )
 
 def word_count(update, text):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     count_text = update.message.text
     words = count_text.split()
     notword = ['!', '?', '.', ',', '@', '#', '$', "%", '^', '&', '*', '(', ')', '"', '-', '+', '-', '??', '???', '????', '!!', '!!!', '!!!!' ,'?!' ,'!?', '..', '...', ':', ';']
@@ -97,6 +102,7 @@ def word_count(update, text):
 
 
 def full_moon(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     user_text = update.message.text
     datetext =  user_text.split()
     date = datetext[1].replace('.', '/')
@@ -104,6 +110,7 @@ def full_moon(update, context):
     update.message.reply_text(f'Следующее полнолуние: {moon_date}. \nУбедитесь, что вы вводили дату в формате "гггг.мм.дд", иначе бот вам пришлет хрень')
 
 def eph(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     date_today = date.today()
     planet_text = update.message.text
     planetext = planet_text.split(' ')
@@ -167,6 +174,7 @@ def eph(update, context):
         update.message.reply_text('Такой планеты в солнечной системе нет')
 
 def check_user_photo(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     update.message.reply_text('Обрабатываем фото',
         reply_markup = my_keyboard())
     os.makedirs('downloads', exist_ok=True)
@@ -199,4 +207,5 @@ def check_user_photo(update, context):
         update.message.reply_text('Я умею распознавать только здания, оружие, машины или животных. Здесь этого нет, удаляю файл')
 
 def photo_request(update, context):
+    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     update.message.reply_text('Пришлите мне картинку. Я её проверю и, если на ней есть животное, оружие, машина или здание, я вам сообщу об этом и сохраню себе в базу')
